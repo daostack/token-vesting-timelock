@@ -1,0 +1,23 @@
+{
+  "name": "daostack_presale_scripts",
+  "version": "0.0.1",
+  "keywords": [
+    "ethereum",
+    "token"
+  ],
+  "author": "daostack",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "bignumber.js": "^6.0.0",
+    "solium": "^1.1.6",
+    "truffle": "^4.1.5",
+    "truffle-contract": "^3.0.3",
+    "zeppelin-solidity": "1.8.0"
+  }
+}
