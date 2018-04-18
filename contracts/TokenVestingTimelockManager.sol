@@ -33,7 +33,7 @@ contract TokenVestingTimelockManager is Ownable {
         address _beneficiary,
         uint256 _start,
         uint256 _duration,
-        bool _revocable,
+        bool _revokable,
         uint256 _releaseTime,
         uint256 _amount
     )
@@ -42,7 +42,7 @@ contract TokenVestingTimelockManager is Ownable {
     returns (bool)
     {
         require(vestingContracts[_beneficiary]==address(0));
-        TokenVestingTimelock tokenVestingAndTimelock = new TokenVestingTimelock(token,_beneficiary,_start,_duration,_revocable,_releaseTime);
+        TokenVestingTimelock tokenVestingAndTimelock = new TokenVestingTimelock(token,_beneficiary,_start,_duration,_revokable,_releaseTime);
         vestingContracts[_beneficiary] = address(tokenVestingAndTimelock);
         token.transfer(address(tokenVestingAndTimelock),_amount);
         emit AddVestedContract(_beneficiary,address(tokenVestingAndTimelock));
@@ -55,27 +55,39 @@ contract TokenVestingTimelockManager is Ownable {
         address[] _beneficiaries,
         uint256[] _start,
         uint256[] _duration,
-        bool[] _revocable,
+        bool[] _revokable,
         uint256[] _releaseTime,
         uint256[] _amounts
     )
     onlyOwner
-    public
+    external
     returns (bool)
     {
         require(_beneficiaries.length == _start.length);
         require(_beneficiaries.length == _duration.length);
-        require(_beneficiaries.length == _revocable.length);
+        require(_beneficiaries.length == _revokable.length);
         require(_beneficiaries.length == _releaseTime.length);
         require(_beneficiaries.length == _amounts.length);
         require(_beneficiaries.length > 0);
 
         for (uint i = 0 ; i < _beneficiaries.length ; i++ ) {
-            addVestedContract(_beneficiaries[i],_start[i],_duration[i],_revocable[i],_releaseTime[i],_amounts[i]);
+            addVestedContract(_beneficiaries[i],_start[i],_duration[i],_revokable[i],_releaseTime[i],_amounts[i]);
         }
     }
 
     function getVestedContract(address _beneficiary) public view returns (address){
         return vestingContracts[_beneficiary];
+    }
+
+    function revoke(address _beneficiary) onlyOwner public returns (bool){
+        return TokenVestingTimelock(vestingContracts[_beneficiary]).revoke();
+    }
+
+    /*
+    ** @dev Drain tokens to a given address.
+    *  @param _to the address to drain the tokens to.
+    */
+    function drain(address _to) onlyOwner public {
+        token.transfer(_to, token.balanceOf(address(this)));
     }
 }

@@ -42,7 +42,7 @@ contract TokenVestingTimelock is Ownable {
    * @param _token the toke to be vested and lock
    * @param _beneficiary address of the beneficiary to whom vested tokens are transferred
    * @param _duration duration in seconds of the period in which the tokens will vest
-   * @param _revocable whether the vesting is revocable or not
+   * @param _revokable whether the vesting is revocable or not
    * @param _releaseTime the release time of the token
    */
     function TokenVestingTimelock(
@@ -50,7 +50,7 @@ contract TokenVestingTimelock is Ownable {
         address _beneficiary,
         uint256 _start,
         uint256 _duration,
-        bool _revocable,
+        bool _revokable,
         uint256 _releaseTime
     )
     public
@@ -62,7 +62,7 @@ contract TokenVestingTimelock is Ownable {
         }
 
         beneficiary = _beneficiary;
-        revocable = _revocable;
+        revocable = _revokable;
         duration = _duration;
         start = _start;
         token = _token;
