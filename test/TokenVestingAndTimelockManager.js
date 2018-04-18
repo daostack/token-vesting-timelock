@@ -58,4 +58,32 @@ contract('TokenVestingTimelockManager', function (accounts)  {
     assert.equal(tx.logs[2].args._beneficiary,beneficiaries[2]);
     assert.equal(tx.logs[2].args._contract,await this.vestingManager.getVestedContract(beneficiaries[2]));
   });
+
+  it('drain ', async function () {
+    assert.equal(await this.token.balanceOf(accounts[2]),0);
+    await this.vestingManager.drain(accounts[2],{from : owner});
+    var balance = await this.token.balanceOf(accounts[2]);
+    if (balance.equals(amount) === false) {
+      assert.equal(true,false);
+    }
+  });
+
+  it('drain onlyOwner', async function () {
+    await this.vestingManager.drain(accounts[1],{from : accounts[2]}).should.be.rejected;
+  });
+
+  it('revoke', async function () {
+    await this.vestingManager.addVestedContract(beneficiary,this.start,this.duration,true,this.releaseTime,1);
+    await increaseTimeTo(this.start + duration.minutes(1));
+    await this.vestingManager.revoke(beneficiary,{from:owner}).should.be.fulfilled;
+  });
+  it('revoke for none exisiting beneficiary should fail', async function () {
+    await increaseTimeTo(this.start + duration.minutes(1));
+    await this.vestingManager.revoke(accounts[1],{from:owner}).should.be.rejected;
+  });
+
+  it('revoke onlyOwner', async function () {
+    await increaseTimeTo(this.start + duration.minutes(1));
+    await this.vestingManager.revoke(beneficiary,{from:accounts[2]}).should.be.rejected;
+  });
 });
