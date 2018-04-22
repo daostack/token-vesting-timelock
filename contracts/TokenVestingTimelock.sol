@@ -87,6 +87,8 @@ contract TokenVestingTimelock is Ownable {
         token.safeTransfer(beneficiary, unreleased);
 
         emit Released(unreleased);
+
+        return true;
     }
 
   /**
@@ -107,6 +109,8 @@ contract TokenVestingTimelock is Ownable {
         token.safeTransfer(owner, refund);
 
         emit Revoked();
+
+        return true;
     }
 
   /**
