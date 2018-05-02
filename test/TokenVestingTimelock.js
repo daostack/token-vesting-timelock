@@ -33,7 +33,7 @@ contract('TokenVestingAndTimelock', function (accounts)  {
 
   it('can immidietly revoke', async function () {
     console.log({revocable: await this.vesting.revocable(), revoked: await this.vesting.revoked()});
-    await this.vesting.revoke();
+    await this.vesting.revoke({ from: owner });
   })
 
   it('cannot be released before release time', async function () {
