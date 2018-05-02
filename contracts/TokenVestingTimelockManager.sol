@@ -13,6 +13,7 @@ import "./TokenVestingTimelock.sol";
  * owner.
  */
 contract TokenVestingTimelockManager is Ownable {
+    using SafeERC20 for ERC20Basic;
 
     event AddVestedContract(address _beneficiary,address _contract);
 
@@ -44,8 +45,9 @@ contract TokenVestingTimelockManager is Ownable {
         require(vestingContracts[_beneficiary]==address(0));
         TokenVestingTimelock tokenVestingAndTimelock = new TokenVestingTimelock(token,_beneficiary,_start,_duration,_revokable,_releaseTime);
         vestingContracts[_beneficiary] = address(tokenVestingAndTimelock);
-        token.transfer(address(tokenVestingAndTimelock),_amount);
+        token.safeTransfer(address(tokenVestingAndTimelock),_amount);
         emit AddVestedContract(_beneficiary,address(tokenVestingAndTimelock));
+        return true;
     }
 
     /**
@@ -73,6 +75,7 @@ contract TokenVestingTimelockManager is Ownable {
         for (uint i = 0 ; i < _beneficiaries.length ; i++ ) {
             addVestedContract(_beneficiaries[i],_start[i],_duration[i],_revokable[i],_releaseTime[i],_amounts[i]);
         }
+        return true;
     }
 
     function getVestedContract(address _beneficiary) public view returns (address){
@@ -88,6 +91,6 @@ contract TokenVestingTimelockManager is Ownable {
     *  @param _to the address to drain the tokens to.
     */
     function drain(address _to) onlyOwner public {
-        token.transfer(_to, token.balanceOf(address(this)));
+        token.safeTransfer(_to, token.balanceOf(address(this)));
     }
 }
