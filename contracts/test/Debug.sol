@@ -1,6 +1,7 @@
 pragma solidity 0.4.23;
 
 import "zeppelin-solidity/contracts/mocks/StandardTokenMock.sol";
+import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
 /*
     A contract you can inherit from that has some useful Events to print statements.

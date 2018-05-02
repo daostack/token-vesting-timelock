@@ -26,6 +26,7 @@
   },
   "scripts": {
     "ganache": "ganache-cli",
-    "test": "truffle test"
+    "test": "truffle test",
+    "deploy": "truffle migrate"
   }
 }
