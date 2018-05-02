@@ -31,6 +31,10 @@ contract('TokenVestingAndTimelock', function (accounts)  {
     await this.token.transfer(this.vesting.address,amount);
   });
 
+  it('can immidietly revoke', async function () {
+    await this.vesting.revoke();
+  })
+
   it('cannot be released before release time', async function () {
     try {
       await this.vesting.release();
