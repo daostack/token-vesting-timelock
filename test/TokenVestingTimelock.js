@@ -84,7 +84,6 @@ contract('TokenVestingAndTimelock', function (accounts)  {
   });
 
   it('should be revoked by owner if revocable is set', async function () {
-    await increaseTimeTo(this.start + duration.minutes(1));
     await this.vesting.revoke({ from: owner }).should.be.fulfilled;
   });
 
