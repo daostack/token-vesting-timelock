@@ -9,12 +9,13 @@ module.exports = async (deployer, network, accounts) => {
     await deployer.deploy(MintableToken);
     const token = await MintableToken.deployed();
     tokenAddress = token.address;
+    const now = Math.floor(new Date() / 1000);
     beneficiaries = accounts.slice(0, 3).map(address => ({
       beneficiary: address,
-      start: 5,
-      duration: 10,
+      start: now + 60, // a minute from now
+      duration: 3 * 60, // three minutes
       revokable: true,
-      releaseTime: 0,
+      releaseTime: now + (5 * 60), // five minutes from now
       amount: 100
     }));
 
