@@ -1,0 +1,21 @@
+{
+  "tokenAddress": "0x..",
+  "beneficiaries": [
+    {
+      "beneficiary": "0x..",
+      "start": 5,
+      "duration": 10,
+      "revokable": false,
+      "releaseTime": 20,
+      "amount": 100
+    },
+    {
+      "beneficiary": "0x..",
+      "start": 5,
+      "duration": 10,
+      "revokable": false,
+      "releaseTime": 20,
+      "amount": 100
+    }
+  ]
+}
