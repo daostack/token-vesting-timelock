@@ -20,7 +20,7 @@
     "chai-bignumber": "^2.0.2",
     "ganache-cli": "6.0.3",
     "solium": "^1.1.6",
-    "truffle": "4.1.7",
+    "truffle": "4.1.5",
     "truffle-contract": "^3.0.3",
     "zeppelin-solidity": "1.8.0"
   },
