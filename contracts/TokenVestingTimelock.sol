@@ -1,9 +1,9 @@
-pragma solidity 0.4.21;
+pragma solidity 0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
-import "zeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
@@ -46,7 +46,7 @@ contract TokenVestingTimelock is Ownable {
    * @param _revokable whether the vesting is revocable or not
    * @param _releaseTime the release time of the token
    */
-    function TokenVestingTimelock(
+    constructor(
         ERC20Basic _token,
         address _beneficiary,
         uint256 _start,
