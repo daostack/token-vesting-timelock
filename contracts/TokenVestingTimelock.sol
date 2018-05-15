@@ -1,9 +1,9 @@
-pragma solidity 0.4.21;
+pragma solidity 0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
-import "zeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
@@ -41,11 +41,12 @@ contract TokenVestingTimelock is Ownable {
    * It will allow a beneficiary to extract the tokens after a given release time
    * @param _token the toke to be vested and lock
    * @param _beneficiary address of the beneficiary to whom vested tokens are transferred
+   * @param  _start start time of the vesting plan
    * @param _duration duration in seconds of the period in which the tokens will vest
    * @param _revokable whether the vesting is revocable or not
    * @param _releaseTime the release time of the token
    */
-    function TokenVestingTimelock(
+    constructor(
         ERC20Basic _token,
         address _beneficiary,
         uint256 _start,
@@ -58,7 +59,7 @@ contract TokenVestingTimelock is Ownable {
         require(_beneficiary != address(0));
         if (_releaseTime > 0) {
             // solium-disable-next-line security/no-block-members
-            require(_releaseTime > now);
+            require(_releaseTime > block.timestamp);
         }
 
         beneficiary = _beneficiary;
@@ -79,7 +80,7 @@ contract TokenVestingTimelock is Ownable {
 
         if (releaseTime > 0) {
         // solium-disable-next-line security/no-block-members
-            require(now >= releaseTime);
+            require(block.timestamp >= releaseTime);
         }
 
         released = released.add(unreleased);
@@ -127,11 +128,14 @@ contract TokenVestingTimelock is Ownable {
         uint256 currentBalance = token.balanceOf(this);
         uint256 totalBalance = currentBalance.add(released);
         // solium-disable-next-line security/no-block-members
-        if (now >= start.add(duration) || revoked) {
+        if (block.timestamp < start) {
+            return 0;
+          // solium-disable-next-line security/no-block-members
+        } else if (block.timestamp >= start.add(duration) || revoked) {
             return totalBalance;
         } else {
-          // solium-disable-next-line security/no-block-members
-            return totalBalance.mul(now.sub(start)).div(duration);
+            // solium-disable-next-line security/no-block-members
+            return totalBalance.mul(block.timestamp.sub(start)).div(duration);
         }
     }
 }

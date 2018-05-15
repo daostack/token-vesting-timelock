@@ -1,8 +1,8 @@
-pragma solidity 0.4.21;
+pragma solidity 0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
-import "zeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "./TokenVestingTimelock.sol";
 
 
@@ -13,17 +13,21 @@ import "./TokenVestingTimelock.sol";
  * owner.
  */
 contract TokenVestingTimelockManager is Ownable {
+    using SafeERC20 for ERC20Basic;
 
     event AddVestedContract(address _beneficiary,address _contract);
 
     ERC20Basic public token;
+    address public contractsOwner;
 
     mapping(address=>address) public vestingContracts;
 
-    function TokenVestingTimelockManager(ERC20Basic _token)
+    constructor(ERC20Basic _token,address _contractsOwner)
     public
     {
         token = _token;
+        contractsOwner = _contractsOwner;
+
     }
 
   /**
@@ -44,8 +48,10 @@ contract TokenVestingTimelockManager is Ownable {
         require(vestingContracts[_beneficiary]==address(0));
         TokenVestingTimelock tokenVestingAndTimelock = new TokenVestingTimelock(token,_beneficiary,_start,_duration,_revokable,_releaseTime);
         vestingContracts[_beneficiary] = address(tokenVestingAndTimelock);
-        token.transfer(address(tokenVestingAndTimelock),_amount);
+        token.safeTransfer(address(tokenVestingAndTimelock),_amount);
+        tokenVestingAndTimelock.transferOwnership(contractsOwner);
         emit AddVestedContract(_beneficiary,address(tokenVestingAndTimelock));
+        return true;
     }
 
     /**
@@ -73,21 +79,18 @@ contract TokenVestingTimelockManager is Ownable {
         for (uint i = 0 ; i < _beneficiaries.length ; i++ ) {
             addVestedContract(_beneficiaries[i],_start[i],_duration[i],_revokable[i],_releaseTime[i],_amounts[i]);
         }
+        return true;
     }
 
     function getVestedContract(address _beneficiary) public view returns (address){
         return vestingContracts[_beneficiary];
     }
 
-    function revoke(address _beneficiary) onlyOwner public returns (bool){
-        return TokenVestingTimelock(vestingContracts[_beneficiary]).revoke();
-    }
-
     /*
     ** @dev Drain tokens to a given address.
     *  @param _to the address to drain the tokens to.
     */
-    function drain(address _to) onlyOwner public {
-        token.transfer(_to, token.balanceOf(address(this)));
+    function drain() onlyOwner public {
+        token.safeTransfer(owner, token.balanceOf(address(this)));
     }
 }
