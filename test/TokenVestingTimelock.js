@@ -1,5 +1,4 @@
-import latestTime from './helpers/latestTime';
-import { increaseTimeTo, duration } from './helpers/increaseTime';
+import { latestTime, increaseTimeTo, duration} from './helpers/time';
 const helpers = require('./helpers');
 
 

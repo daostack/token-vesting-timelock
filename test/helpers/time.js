@@ -1,7 +1,10 @@
-import latestTime from './latestTime';
+// Returns the time of the last mined block in seconds
+export function latestTime () {
+  return web3.eth.getBlock('latest').timestamp;
+}
 
 // Increases testrpc time by the passed duration in seconds
-export default function increaseTime (duration) {
+export function increaseTime (duration) {
   const id = Date.now();
 
   return new Promise((resolve, reject) => {
@@ -36,6 +39,21 @@ export function increaseTimeTo (target) {
   if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
   let diff = target - now;
   return increaseTime(diff);
+}
+
+export function wait(duration) {
+  return new Promise((res, rej) => {
+    setTimeout(res, duration);
+  })
+}
+
+export function waitTo(time) {
+  return new Promise((res, rej) => {
+    const now = latestTime();
+    if(time < now)
+      rej(new Error(`Cannot wait to past time: '${time}'`));
+    setTimeout(res, time - now);
+  })
 }
 
 export const duration = {
