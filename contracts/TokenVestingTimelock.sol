@@ -85,8 +85,6 @@ contract TokenVestingTimelock is Ownable {
 
         released = released.add(unreleased);
 
-        require(unreleased > 0);
-
         token.safeTransfer(beneficiary, unreleased);
 
         emit Released(unreleased);
